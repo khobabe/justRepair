@@ -63,7 +63,7 @@ class ServiceApiController extends Controller
 
     public function update(Request $request, string $slug)
     {
-        // Find the service by its ID
+        // Find the service by its slug
         $service = Service::where("slug", $slug)->first();
 
         // Check if the service exists
@@ -75,24 +75,46 @@ class ServiceApiController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'requirements' => 'nullable|array', // Assuming requirements are passed as an array
+            'requirements' => 'nullable|array',
+            'requirements.*.id' => 'nullable|exists:requirements,id',
+            'requirements.*.req_name' => 'required|string|max:255',
         ]);
 
         // Update the service fields
         $service->name = $validatedData['name'];
         $service->description = $validatedData['description'];
+        $service->save(); // Save the updated service
 
-        // If there are requirements, update them
+        // Delete requirements that are not in the updated list
+        $existingIds = collect($validatedData['requirements'])->pluck('id')->filter();
+        Requirement::where('service_id', $service->id)
+            ->whereNotIn('id', $existingIds)
+            ->delete();
+
+        // Update the requirements
         if (isset($validatedData['requirements'])) {
-            $service->requirements = json_encode($validatedData['requirements']); // Save as JSON if necessary
+            foreach ($validatedData['requirements'] as $reqData) {
+                if (isset($reqData['id'])) {
+                    // Update existing requirement
+                    $requirement = Requirement::find($reqData['id']);
+                    if ($requirement) {
+                        $requirement->req_name = $reqData['req_name'];
+                        $requirement->save();
+                    }
+                } else {
+                    // Create a new requirement (if no ID provided)
+                    Requirement::create([
+                        'service_id' => $service->id,
+                        'req_name' => $reqData['req_name'],
+                    ]);
+                }
+            }
         }
-
-        // Save the updated service
-        $service->save();
 
         // Return a success response
         return response()->json(['message' => 'Service updated successfully', 'service' => $service]);
     }
+
 
 
 

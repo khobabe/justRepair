@@ -124,7 +124,7 @@
                         success: function(response) {
                             $('#accordionExample').empty();
                             response.forEach(function(item) {
-                            
+
                                 var accordionItem = `
                                 <div class="card">
                                     <div class="card-header" id="heading${item.id}">
@@ -138,8 +138,8 @@
                                         <div class="card-body">
                                             <ul class="list-group">
                                             `;
-                                                item.sub_fees.forEach(function(subFee) {
-                                                    accordionItem += `
+                                item.sub_fees.forEach(function(subFee) {
+                                    accordionItem += `
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <span>${subFee.service_fees_name}:</span>
                                                 <span>
@@ -178,8 +178,8 @@
                                                 </div>    
                                             </li>
                                             `;
-                                                });
-                                                accordionItem += `
+                                });
+                                accordionItem += `
                                             </ul>
                                         </div>
                                     </div>
@@ -288,9 +288,8 @@
                                                         <label for="editServiceIcon">Icon</label>
                                                         <input type="file" class="form-control" id="editServiceIcon" name="icon">
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label for="editServiceRequirements">Requirements</label>
-                                                        <input type="text" class="form-control" id="editServiceRequirements" name="requirements">
+                                                    <div class="form-group" id="editServiceRequirementsContainer">
+                                                        // appending this in the ajax section with javascript appending method
                                                     </div>
                                                     <button type="submit" class="btn btn-primary">Update</button>
                                                 </form>
@@ -321,18 +320,27 @@
                                     $('#editServiceDescription').val(response
                                         .description);
 
-                                    // Process requirements safely
+                                    // Process requirements safely  
                                     if (Array.isArray(response.requirements)) {
-                                        var reqNames = response.requirements.map(
-                                            function(item) {
-                                                return item.req_name;
-                                            });
-                                        $('#editServiceRequirements').val(reqNames.join(
-                                            ', '));
-                                        console.log(reqNames); // Log for debugging
+                                        let requirementsHTML =
+                                            ''; // To hold the dynamically created input fields
+
+                                        response.requirements.forEach(function(item,
+                                            index) {
+                                            requirementsHTML += `
+                                                <div class="requirement-item">
+                                                    <label for="requirement-${index}">Requirement ${index + 1}</label>
+                                                    <input type="text" class="form-control" id="requirement-${index}" name="requirements[${index}][req_name]" value="${item.req_name}" data-id="${item.id}">
+                                                </div>`;
+                                        });
+
+                                        $('#editServiceRequirementsContainer').html(
+                                            requirementsHTML);
+                                        console.log(response
+                                            .requirements); // Log for debugging
                                     } else {
                                         console.error('Invalid requirements data.');
-                                        $('#editServiceRequirements').val(
+                                        $('#editServiceRequirementsContainer').html(
                                             ''); // Clear the field if invalid
                                     }
 
@@ -346,6 +354,7 @@
                             });
 
                         });
+
                         //edit work goes here
                         $('#editServiceForm').submit(function(e) {
                             e.preventDefault(); // Prevent the default form submission
@@ -355,14 +364,28 @@
 
                             let name = $('#editServiceName').val();
                             let description = $('#editServiceDescription').val();
+                            // let requirements = $('#editServiceRequirements').val();
+
+
+                            // Collect requirements as an array of objects
+                            let requirements = [];
+                            $('#editServiceRequirementsContainer .requirement-item input').each(
+                                function() {
+                                    requirements.push({
+                                        id: $(this).data('id'), //here fetching the ID from requirements;
+                                        req_name: $(this).val().trim()
+                                    });
+                                });
 
 
 
                             // Send the update request via AJAX
                             let formdata = {
                                 name,
-                                description
+                                description,
+                                requirements
                             };
+
                             console.log(formdata);
                             $.ajax({
                                 url: updateUrl,
@@ -396,6 +419,7 @@
                     }
                 });
 
+                // here goes the services and the required fee:
                 $.ajax({
                     url: '{{ route('servicefee.index') }}',
                     type: 'GET',

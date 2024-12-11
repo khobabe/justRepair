@@ -263,39 +263,39 @@
                                     <button class="btn btn-primary btn-sm editBtn" data-id="${response.slug}">Edit</button>
                                      {{-- model for service-edit work goes here --}}
                                     <div class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="editServiceModalLabel">Edit Service</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form method="post" id="editServiceForm">
-                                                    @csrf
-                                                    @method('put')
-                                                    <input type="hidden" id="editServiceId" name="id">
-                                                    <div class="form-group">
-                                                        <label for="editServiceName">Name</label>
-                                                        <input type="text" class="form-control" id="editServiceName" name="name" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="editServiceDescription">Description</label>
-                                                        <textarea class="form-control" id="editServiceDescription" name="description" required></textarea>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="editServiceIcon">Icon</label>
-                                                        <input type="file" class="form-control" id="editServiceIcon" name="icon">
-                                                    </div>
-                                                    <div class="form-group" id="editServiceRequirementsContainer">
-                                                        // appending this in the ajax section with javascript appending method
-                                                    </div>
-                                                    <button type="submit" class="btn btn-primary">Update</button>
-                                                </form>
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editServiceModalLabel">Edit Service</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="post" id="editServiceForm">
+                                                        @csrf
+                                                        @method('put')
+                                                        <input type="hidden" id="editServiceId" name="id">
+                                                        <div class="form-group">
+                                                            <label for="editServiceName">Name</label>
+                                                            <input type="text" class="form-control" id="editServiceName" name="name" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="editServiceDescription">Description</label>
+                                                            <textarea class="form-control" id="editServiceDescription" name="description" required></textarea>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="editServiceIcon">Icon</label>
+                                                            <input type="file" class="form-control" id="editServiceIcon" name="icon">
+                                                        </div>
+                                                        <div class="form-group" id="editServiceRequirementsContainer">
+                                                            // appending this in the ajax section with javascript appending method
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     </div>
 
                                 </td>
@@ -372,7 +372,8 @@
                             $('#editServiceRequirementsContainer .requirement-item input').each(
                                 function() {
                                     requirements.push({
-                                        id: $(this).data('id'), //here fetching the ID from requirements;
+                                        id: $(this).data(
+                                        'id'), //here fetching the ID from requirements;
                                         req_name: $(this).val().trim()
                                     });
                                 });

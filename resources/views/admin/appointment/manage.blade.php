@@ -37,9 +37,10 @@
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dateRangeDropdown">
                                                 <a class="dropdown-item" href="#" data-range="today">Today</a>
-                                                <a class="dropdown-item" href="#" data-range="yesterday">Yesterday</a>
-                                                <a class="dropdown-item" href="#" data-range="last_week">Last Week</a>
-                                                <a class="dropdown-item" href="#" data-range="last_month">Last
+                                                <a class="dropdown-item" href="#" data-range="yest_week">Last Week</a>
+                                                <a class="dropdown-item" href="#"
+                                                    data-range="lassterday">Yesterday</a>
+                                                <a class="dropdown-item" href="#" data-range="lat_month">Last
                                                     Month</a>
                                                 <a class="dropdown-item" href="#" data-range="this_year">This Year</a>
                                                 <a class="dropdown-item" href="#" data-range="custom">Custom</a>
@@ -74,8 +75,8 @@
                                 <div class="col-md-6"></div>
                                 <div class="col-md-6">
                                     <div class="input-group input-group-sm">
-                                        <input type="text" name="table_search" class="form-control float-right"
-                                            placeholder="Search">
+                                        <input type="text" name="table_search" id="searchField"
+                                            class="form-control float-right" placeholder="Search">
                                         <div class="input-group-append">
                                             <button type="submit" class="btn btn-default" id="searchButton">
                                                 <i class="fas fa-search"></i>
@@ -166,18 +167,22 @@
                     startDate = yyyy + '-' + mm + '-' + dd;
                     endDate = yyyy + '-' + mm + '-' + dd;
                 }
-
+                // console.log(complainNo) //debug
                 var data = {
                     dateRange: dateRange,
                     startDate: startDate,
                     endDate: endDate,
-                    search: search
+                    search: search,
                 };
+
+                // console.log(complainNo) //debug
+
 
                 $.ajax({
                     url: "{{ route('appointment.index') }}",
                     type: 'GET',
                     data: data,
+
                     success: function(response) {
                         if (response && response.length > 0) {
                             var tableRows = '';
@@ -185,20 +190,23 @@
                                 var requirements = JSON.parse(row.requirements);
                                 var requirementsHtml = '';
 
+                                // console.log(complainNo) //debug
+
                                 $.each(requirements, function(i, requirement) {
                                     requirementsHtml +=
                                         `<span class="badge bg-success">${requirement}</span> `;
                                 });
 
-                                tableRows += `<tr> 
-                    <td>${row.complain_no}</td>
-                    <td>${row.fullname}</td>
-                    <td>${row.preferred_date}</td>
-                    <td>${row.preferred_time}</td>
-                    <td>${requirementsHtml}</td>
-                    <td>${row.mobileno}</td>
-                    <td> <a href='/admin/appointment/view/${row.id}'class='btn btn-warning'>View</a> </td>
-                </tr>`;
+                                tableRows +=
+                                    `<tr> 
+                                        <td>${row.complain_no}</td>
+                                        <td>${row.fullname}</td>
+                                        <td>${row.preferred_date}</td>
+                                        <td>${row.preferred_time}</td>
+                                        <td>${requirementsHtml}</td>
+                                        <td>${row.mobileno}</td>
+                                        <td> <a href='/admin/appointment/view/${row.id}'class='btn btn-warning'>View</a> </td>
+                                    </tr>`;
                             });
                             $('#tableBody').html(tableRows);
                         }
@@ -218,7 +226,7 @@
             });
 
             // Search functionality
-            $('input[name="table_search"]').keyup(function() {
+            $('#searchField').keyup(function() {
                 var search = $(this).val();
                 filterAppointments('custom', null, null, search);
             });

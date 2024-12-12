@@ -42,7 +42,9 @@ class AppointmentApiController extends Controller
         if ($searchTerm) {
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('fullname', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('mobileno', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('mobileno', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('complain_no',$searchTerm)
+                    ;
             });
         }
     

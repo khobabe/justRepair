@@ -90,8 +90,8 @@
                     <!-- /.card -->
 
                     <div class="card">
-                        <div class="card-header border-0">
-                            <h3 class="card-title">New Appointments</h3>
+                        <div class="card-header border-0 bg-black">
+                            <h3 class="card-title">Total Users</h3>
                             <div class="card-tools">
                                 <a href="#" class="btn btn-tool btn-sm">
                                     <i class="fas fa-download"></i>
@@ -104,18 +104,26 @@
                         <div class="card-body table-responsive p-0">
                             <table class="table table-sm text-sm table-striped table-valign-middle">
                                 <thead>
-                                    <tr>
-                                        <th>Complain No</th>
-                                        <th>Name</th>
-                                        <th>Date</th>
-                                        <th>Requirement</th>
-                                        <th>Contact</th>
-                                        <th>Address</th>
-                                        <th>Action</th>
+                                    <tr class="table-light">
+                                      <th class="py-2 px-3 text-start">ID</th>
+                                      <th class="py-2 px-3 text-start">Name</th>
+                                      <th class="py-2 px-3 text-start">Email</th>
+                                      <th class="py-2 px-3 text-start">Mobile No</th>
+                                      <th class="py-2 px-3 text-start">Is Admin</th>
+                                      <th class="py-2 px-3 text-start">Email Verified At</th>
+                                      <th class="py-2 px-3 text-start">Password</th>
                                     </tr>
-                                </thead>
+                                  </thead>
                                 <tbody id="tableBody">
-
+                                    <tr>
+                                        <td class="py-2 px-3">1</td>
+                                        <td class="py-2 px-3">John Doe</td>
+                                        <td class="py-2 px-3">john.doe@example.com</td>
+                                        <td class="py-2 px-3">+1234567890</td>
+                                        <td class="py-2 px-3">Yes</td>
+                                        <td class="py-2 px-3">2024-12-13</td>
+                                        <td class="py-2 px-3">********</td>
+                                      </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -144,7 +152,7 @@
 @endsection
 
 
-@section('js')
+{{-- @section('js')
     <script>
         $.ajax({
             url: '{{ route('appointment.index') }}',
@@ -192,4 +200,4 @@
             }
         });
     </script>
-@endsection
+@endsection --}}

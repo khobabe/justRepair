@@ -38,8 +38,11 @@ Route::prefix("admin")->group(function () {
 
     Route::middleware('auth:admin')->group(function () {
         Route::controller(AdminController::class)->group(function () {
+            
             Route::get('/', 'dashboard')->name("admin.dashboard");
-    
+            Route::get('/users' , 'usersProfile')->name('admin.users');
+            Route::get('/unique-visitors','uniqueVisitors')->name('admin.unique.visitors');
+
             //service routes
             Route::prefix("service")->group(function () {
                 Route::controller(ServiceController::class)->group(function () {

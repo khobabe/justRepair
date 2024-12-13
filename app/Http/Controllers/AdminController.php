@@ -58,5 +58,17 @@ class AdminController extends Controller
         return view('admin.viewInvoice', compact("invoiceId", "invoiceData"));
     }
 
+    public function usersProfile(){
+        $data['count_appointment'] = Appointment::all()->count();
+        $data['count_user'] = User::all()->count();
+        return view('admin.users' , $data);
+    }
+
+    public function uniqueVisitors(){
+        $data['count_appointment'] = Appointment::all()->count();
+        $data['count_user'] = User::all()->count();
+        return view('admin.unique-visitors',$data);
+    }
+
     
 }

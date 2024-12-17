@@ -51,6 +51,10 @@ Route::prefix("admin")->group(function () {
                     Route::get('/view/{id}', 'view')->name("admin.service.view");
                     Route::post('/store', 'store')->name("admin.service.store");
                     Route::put("view/{id}/servicefee/{servicefees_id}/update", "updateServiceFees");
+                    Route::put('/requirements/{id}','updateRequirements')->name('requirements.update');
+                    Route::post('/requirements', 'storeRequirements')->name('requirements.store');
+
+
                 });
             });
             // Route::prefix("service-fee")->group(function () {

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Requirement extends Model
 {
     use HasFactory;
-    protected $fillable =  ["requirement",];
+    protected $fillable = ['req_name', 'service_id'];
 
     public function appointment()
     {

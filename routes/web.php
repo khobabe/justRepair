@@ -53,6 +53,8 @@ Route::prefix("admin")->group(function () {
                     Route::put("view/{id}/servicefee/{servicefees_id}/update", "updateServiceFees");
                     Route::put('/requirements/{id}','updateRequirements')->name('requirements.update');
                     Route::post('/requirements', 'storeRequirements')->name('requirements.store');
+                    Route::delete('/requirements/{id}', 'destroyRequirements')->name('requirements.destroy');
+
 
 
                 });

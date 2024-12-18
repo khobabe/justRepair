@@ -6,6 +6,8 @@ use App\Models\Requirement;
 use App\Models\Service;
 use App\Models\ServiceFees;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class ServiceController extends Controller
 {
@@ -66,21 +68,51 @@ class ServiceController extends Controller
         return redirect()->back()->with('success', 'Requirement updated successfully.');
     }
 
+
     public function storeRequirements(Request $request)
     {
-        // dd($request->all()); //debugging, checking the values sent in the request here;
+        try {
+            // Validate the request with custom error messages
+            $validatedData = $request->validate([
+                'req_name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('requirements')->where(function ($query) use ($request) {
+                        return $query->where('service_id', $request->service_id);
+                    }),
+                ],
+                'service_id' => 'required|integer|exists:services,id',
+            ], [
+                'req_name.required' => 'The requirement name is required.',
+                'req_name.unique' => 'This requirement already exists for the selected service.',
+                'service_id.exists' => 'The selected service is invalid.',
+            ]);
 
-        $request->validate([
-            'req_name' => 'required|string|max:255',
-            'service_id' => 'required|integer|exists:services,id', // Ensure service_id exists
-        ]);
+            // Create the new requirement
+            Requirement::create($validatedData);
 
-        // Create new requirement with the service_id from the current view context
-        Requirement::create([
-            'req_name' => $request->req_name,
-            'service_id' => $request->service_id, // Pass the service_id from request
-        ]);
+            return redirect()->back()->with('success', 'Requirement added successfully.');
+        } catch (ValidationException $e) {
+            // Check for a duplicate data error
+            if ($e->validator->errors()->has('req_name')) {
+                session()->flash('error', $e->validator->errors()->first('req_name'));
+                return redirect()->back();
+            }
 
-        return redirect()->back()->with('success', 'Requirement added successfully.');
+            // Re-throw the exception if it's not a validation error we're handling
+            throw $e;
+        }
+    }
+
+
+
+    // requirements delete work goes here
+    public function destroyRequirements($id)
+    {
+        $requirement = Requirement::findOrFail($id);
+        $requirement->delete();
+
+        return redirect()->back()->with('success', 'Requirement deleted successfully.');
     }
 }

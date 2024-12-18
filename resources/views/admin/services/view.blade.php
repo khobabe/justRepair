@@ -53,6 +53,23 @@
                                     <h6 class="align-items-center text-primary">Manage Requirements</h6>
                                 </div>
                                 <div class="card-body">
+                                    {{-- flash message section starts here --}}
+                                    @if (session('success'))
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            {{ session('success') }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    @endif
+
+                                    @if (session('error'))
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            {{ session('error') }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    @endif
+                                    {{-- flash message section ends here --}}
                                     <form action="{{ route('requirements.store') }}" method="POST"
                                         class="d-flex align-items-center mb-3">
                                         @csrf
@@ -64,11 +81,59 @@
                                     </form>
                                     <div>
                                         @foreach ($service->requirements as $req)
-                                            <div class="d-flex justify-content-between align-items-center mb-1 p-2 border rounded ">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center mb-1 p-2 border rounded ">
                                                 {{ $req->req_name }}
-                                                <button class="btn btn-sm btn-primary ml-2 edit-btn"
-                                                    data-id="{{ $req->id }}" data-toggle="modal"
-                                                    data-target="#editRequirementModal_{{ $req->id }}">Edit</button>
+                                                <div>
+                                                    {{-- edit button goes here --}}
+                                                    <button class="btn btn-sm btn-primary ml-2 edit-btn"
+                                                        data-id="{{ $req->id }}" data-toggle="modal"
+                                                        data-target="#editRequirementModal_{{ $req->id }}">Edit
+                                                    </button>
+
+                                                    {{-- delete button goes here --}}
+                                                    <button class="btn btn-sm btn-danger ml-2 delete-btn"
+                                                        data-id="{{ $req->id }}" data-toggle="modal"
+                                                        data-target="#deleteRequirementModal_{{ $req->id }}">Delete
+                                                    </button>
+                                                </div>
+
+                                                <!-- Delete requirements modal starts here -->
+                                                <div class="modal fade" id="deleteRequirementModal_{{ $req->id }}"
+                                                    tabindex="-1" role="dialog"
+                                                    aria-labelledby="deleteRequirementModalLabel_{{ $req->id }}"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title"
+                                                                    id="deleteRequirementModalLabel_{{ $req->id }}">
+                                                                    Delete Requirement
+                                                                </h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Are you sure you want to delete this requirement?</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <form
+                                                                    action="{{ route('requirements.destroy', $req->id) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-dismiss="modal">Cancel</button>
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Delete requirements modal ends here -->
 
                                                 {{-- edit requirements modal starts here --}}
                                                 <div class="modal fade" id="editRequirementModal_{{ $req->id }}"
@@ -79,10 +144,11 @@
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title"
-                                                                    id="editRequirementModalLabel_{{ $req->id }}">Edit
+                                                                    id="editRequirementModalLabel_{{ $req->id }}">
+                                                                    Edit
                                                                     Requirement</h5>
-                                                                <button type="button" class="close" data-dismiss="modal"
-                                                                    aria-label="Close">
+                                                                <button type="button" class="close"
+                                                                    data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>
